@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/vendor/autoload.php';
+use Symfony\Component\Console\Application;
+
+if (isset($argv[1])) {
+    $application = new Application('Console');
+
+    $CacheClearCommand = new \Commands\CacheClear();
+    $GenerateController = new \Commands\GenerateController();
+    $GenerateMiddleware = new \Commands\GenerateMiddleware();
+    $GenerateEntity = new \Commands\GenerateEntity();
+    $GenerateFixture = new \Commands\GenerateFixture();
+    $DataFixtures = new \Commands\DataFixtures();
+    $DataFixture = new \Commands\DataFixture();
+
+    $application->add($CacheClearCommand);
+    $application->add($GenerateController);
+    $application->add($GenerateMiddleware);
+    $application->add($GenerateEntity);
+    $application->add($GenerateFixture);
+    $application->add($DataFixtures);
+    $application->add($DataFixture);
+    $application->run();
+} else {
+    system('php '.__DIR__.'/console --help');
+}
