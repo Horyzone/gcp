@@ -49,6 +49,41 @@ class User
     private $password;
 
     /**
+     * @var string $rememberToken
+     *
+     * @ORM\Column(name="remember_token", type="string", nullable=true)
+     */
+    private $rememberToken;
+
+    /**
+     * @var string $resetToken
+     *
+     * @ORM\Column(name="reset_token", type="string", nullable=true)
+     */
+    private $resetToken;
+
+    /**
+     * @var string $google
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $google;
+
+    /**
+     * @var string $avatar
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $avatar;
+
+    /**
+     * @var integer $fonction
+     * @ORM\ManyToOne(targetEntity="App\Entity\Fonction", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_fonction", referencedColumnName="id_fonction", nullable=true)
+     */
+    private $fonction;
+
+    /**
      * @var integer $profil
      * @ORM\ManyToOne(targetEntity="App\Entity\Profil", cascade={"persist"})
      * @ORM\JoinColumn(name="id_profil", referencedColumnName="id_profil", nullable=true)
@@ -77,15 +112,27 @@ class User
     private $dateLeaving;
 
     /**
+     * @var bool $active
+     *
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $active;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->dateCreate = new \DateTime();
         $this->password = null;
+        $this->rememberToken = null;
+        $this->resetToken = null;
+        $this->google = null;
+        $this->avatar = null;
         $this->profil = null;
         $this->dateHire = null;
         $this->dateLeaving = null;
+        $this->active = true;
     }
 
     /**
@@ -203,6 +250,98 @@ class User
     }
 
     /**
+     * Get rememberToken
+     *
+     * @return string
+     */
+    public function getRememberToken()
+    {
+        return $this->rememberToken;
+    }
+
+    /**
+    * Set rememberToken
+    *
+    * @param string $rememberToken
+    *
+    * @return User
+    */
+    public function setRememberToken($rememberToken)
+    {
+        $this->rememberToken = $rememberToken;
+        return $this;
+    }
+
+    /**
+     * Get resetToken
+     *
+     * @return string
+     */
+    public function getResetToken()
+    {
+        return $this->resetToken;
+    }
+
+    /**
+     * Set resetToken
+     *
+     * @param string $resetToken
+     *
+     * @return User
+     */
+    public function setResetToken($resetToken)
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+    /**
+    * Get google
+    *
+    * @return string
+    */
+    public function getGoogle()
+    {
+        return $this->google;
+    }
+
+    /**
+     * Set google
+     *
+     * @param string $google
+     *
+     * @return User
+     */
+    public function setGoogle($google)
+    {
+        $this->google = $google;
+        return $this;
+    }
+
+    /**
+    * Get avatar
+    *
+    * @return string
+    */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * Set avatar
+     *
+     * @param string $avatar
+     *
+     * @return User
+     */
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+    /**
     * Get profil
     *
     * @return \Doctrine\Common\Collections\Collection
@@ -291,6 +430,29 @@ class User
     public function setDateLeaving(\DateTime $dateLeaving = null)
     {
         $this->dateLeaving = $dateLeaving;
+        return $this;
+    }
+
+    /**
+    * Get active
+    *
+    * @return boolean
+    */
+    public function isActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     *
+     * @return User
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
         return $this;
     }
 }

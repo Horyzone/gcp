@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,10 +28,19 @@ class Profil
     private $name;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Permission", cascade={"persist"})
+     * @ORM\JoinTable(name="profil_permission",
+     * joinColumns={@ORM\JoinColumn(name="id_profil", referencedColumnName="id_profil")}, inverseJoinColumns={
+     * @ORM\JoinColumn(name="id_permission", referencedColumnName="id_permission", unique=false)})
+     */
+    private $permissions;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
+        $this->permissions = new ArrayCollection();
     }
 
     /**
@@ -64,5 +74,35 @@ class Profil
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Add permission
+     *
+     * @param \App\Entity\Permission $permission
+     */
+    public function addPermission(\App\Entity\Permission $permission)
+    {
+        $this->permissions[] = $permission;
+    }
+
+    /**
+     * Remove permission
+     *
+     * @param \App\Entity\Permission $permission
+     */
+    public function removePermission(\App\Entity\Permission $permission)
+    {
+        $this->permissions->removeElement($permission);
+    }
+
+    /**
+     * Get permissions
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
     }
 }
