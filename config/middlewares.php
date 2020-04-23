@@ -13,7 +13,3 @@ $app->add(new Middlewares\OldMiddleware($container));
 
 // Middleware pour la génération de token
 $app->add(new Middlewares\TokenMiddleware($container));
-
-// Middleware pour la vérification csrf
-$app->add(new Middlewares\CsrfMiddleware($container));
-$app->add('csrf');

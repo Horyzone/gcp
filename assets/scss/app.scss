@@ -1,2 +1,9 @@
 $black: #373a3c;
 $blue: #2780E3;
+$logo: url(./../img/logo.png);
+@import 'auth';
+
+.btn-icon {
+  float: left !important;
+  font-size: 26px;
+}
