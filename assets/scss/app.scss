@@ -7,3 +7,9 @@ $logo: url(./../img/logo.png);
   float: left !important;
   font-size: 26px;
 }
+
+#logo-navbar {
+  height: 30px;
+  width: 30px;
+  content: $logo;
+}
