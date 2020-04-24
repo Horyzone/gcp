@@ -43,15 +43,15 @@ class RememberMiddleware
                             ];
                             setcookie("remember", $remember_token, time() + 60 * 60 * 24 * 1);
                         } else {
-                            // Si cookie non valide, rediriger vers login après avoir supprimer ce dernier
+                            // Si cookie non valide
                             setcookie("remember", null, -1);
                         }
                     } else {
-                        // Si utilisateur désactivé, rediriger vers login après avoir supprimer ce dernier
+                        // Si utilisateur désactivé
                         setcookie("remember", null, -1);
                     }
                 } else {
-                    // Si cookie mais utilisateur inexistant, expiration du cookie et rediriger vers login
+                    // Si cookie mais utilisateur inexistant
                     setcookie("remember", null, -1);
                 }
             }
