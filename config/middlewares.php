@@ -5,6 +5,9 @@ use App\Middlewares;
 
 $app->add(TwigMiddleware::createFromContainer($app));
 
+// Middleware pour la connexion (se souvenir de moi)
+$app->add(new Middlewares\RememberMiddleware($container));
+
 // Middleware pour les message d'alert en session
 $app->add(new Middlewares\AlertMiddleware($container));
 

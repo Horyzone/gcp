@@ -60,6 +60,14 @@ class AuthController extends Controller
                                         "permissions" => $user[0]->getProfil()->getPermissions()
                                     ];
                                     // Notification
+                                    if (isset($params["remember"]) && $params["remember"] == "on") {
+                                        $remember_token = $this->generateToken();
+                                        setcookie("remember", $user[0]->getId()."==".$remember_token.
+                                        sha1($user[0]->getId()."gcp"), time() + 60 * 60 * 24 * 1);
+                                        $user[0]->setRememberToken($remember_token);
+                                        $this->em->persist($user[0]);
+                                        $this->em->flush();
+                                    }
                                     $_SESSION["auth"] = $auth;
                                     $this->alert(["Vous êtes connecté !"], "success");
                                     return $this->redirect($response, "home");
@@ -101,6 +109,7 @@ class AuthController extends Controller
             unset($_SESSION["auth"]);
             unset($_SESSION["csrf"]);
             unset($_SESSION["token"]);
+            setcookie("remember", null, -1);
             $this->alert(["Vous êtes déconnecté !"], "success");
             return $this->redirect($response, "login");
         } else {
