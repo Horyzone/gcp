@@ -16,11 +16,13 @@
   </div>
   {{ csrf() }}
   <button class="btn btn-lg btn-primary btn-block" type="submit">Se connecter</button>
-  <p class="margin-egal">ou</p>
-  <a href="{{ url_for('google') }}" class="btn btn-lg btn-secondary btn-block">
-    <span class="btn-icon fab fa-google"></span>
-    Se connecter via Google
-  </a>
+  {% if google %}
+    <p class="margin-egal">ou</p>
+    <a href="{{ url_for('google') }}" class="btn btn-lg btn-secondary btn-block">
+      <span class="btn-icon fab fa-google"></span>
+      Se connecter via Google
+    </a>
+  {% endif %}
   <p class="mt-3 mb-3 text-muted">&copy; 2020-{{ now|date("Y") }}</p>
 </form>
 
