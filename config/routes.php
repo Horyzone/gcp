@@ -14,6 +14,10 @@ $app->group('', function ($app) {
 ->add(new Middlewares\CsrfMiddleware($container))
 ->add('csrf');
 
+// Oauth google
+$app->get('/auth/google', AuthController::class. ':getOauth')->setName('google');
+$app->get('/auth/google/callback', AuthController::class. ':getOauthCallBack')->setName('callback');
+
 // Se déconnecter
 $app->get('/logout', AuthController::class. ':getLogout')->setName('logout');
 

@@ -67,3 +67,38 @@ $container->set('em', function () use ($rootPath) {
     );
     return \Doctrine\ORM\EntityManager::create($connection, $config);
 });
+
+// Oauth google
+$container->set('google', function () use ($rootPath) {
+    $credentials = json_decode(file_get_contents($rootPath."/credentials.json"));
+    if (isset($_SERVER["HTTP_HOST"])) {
+        foreach ($credentials->google->redirect_uris as $k => $v) {
+            if (preg_match("#".$_SERVER["HTTP_HOST"]."#", $v)) {
+                $redirect = $v;
+                break;
+            }
+        }
+    }
+    if (!isset($redirect)) {
+        $redirect = $credentials->google->redirect_uris[0];
+    }
+    $configureProviders = [
+        "redirectUri" => $redirect,
+        "provider" => [
+            "google" => [
+                "applicationId" => $credentials->google->client_id,
+                "applicationSecret" => $credentials->google->client_secret,
+                "scope" => [
+                    "email",
+                    "profile"
+                ]
+            ]
+        ]
+    ];
+    $httpClient = new \SocialConnect\Common\Http\Client\Curl();
+    return new \SocialConnect\Auth\Service(
+        $httpClient,
+        new \SocialConnect\Provider\Session\Session(),
+        $configureProviders
+    );
+});

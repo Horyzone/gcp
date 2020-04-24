@@ -48,7 +48,7 @@ class AuthController extends Controller
                                 return $this->redirect($response, "login", 400);
                             } else {
                                 if ($user[0]->passwordVerify($params["password"])) {
-                                    $auth = [
+                                    $_SESSION["auth"] = [
                                         "id_user" => $user[0]->getId(),
                                         "email" => $user[0]->getEmail(),
                                         "nom" => $user[0]->getLastName(),
@@ -68,7 +68,6 @@ class AuthController extends Controller
                                         $this->em->persist($user[0]);
                                         $this->em->flush();
                                     }
-                                    $_SESSION["auth"] = $auth;
                                     $this->alert(["Vous êtes connecté !"], "success");
                                     return $this->redirect($response, "home");
                                 } else {
@@ -115,5 +114,73 @@ class AuthController extends Controller
         } else {
             return $this->redirect($response, "home");
         }
+    }
+
+    public function getOauthCallBack(RequestInterface $request, ResponseInterface $response)
+    {
+        if (!$this->google->getFactory()->has("google")) {
+            throw new \Exception('Wrong $provider passed in url : google');
+        }
+        $provider = $this->google->getProvider("google");
+        $accessToken = $provider->getAccessTokenByRequestParameters($_GET);
+        $user = $provider->getIdentity($accessToken);
+        $userEntity = $this->em->getRepository("App\Entity\User")->getUserByEmail($user->email);
+        if ($userEntity != null && !empty($userEntity)) {
+            $userEntity = $userEntity[0];
+            if ($userEntity->isActive()) {
+                // Remember token
+                $remember_token = $this->generateToken();
+                setcookie("remember", $userEntity->getId()."==".$remember_token.
+                sha1($userEntity->getId()."gcp"), time() + 60 * 60 * 24 * 1);
+                // Update entity
+                $userEntity->setRememberToken($remember_token);
+                if (is_null($userEntity->getGoogle())) {
+                    $userEntity->setGoogle($user->id);
+                }
+                if (is_null($userEntity->getAvatar())) {
+                    $userEntity->setAvatar($user->pictureURL);
+                }
+                if (is_null($userEntity->getFirstName())) {
+                    $userEntity->setFirstName($user->firstname);
+                }
+                if (is_null($userEntity->getLastName())) {
+                    $userEntity->setLastName($user->lastname);
+                }
+                $this->em->persist($userEntity);
+                $this->em->flush();
+                // Session
+                $_SESSION["auth"] = [
+                    "id_user" => $userEntity->getId(),
+                    "email" => $userEntity->getEmail(),
+                    "nom" => $userEntity->getLastName(),
+                    "prenom" => $userEntity->getFirstName(),
+                    "id_fonction" => $userEntity->getFonction()->getId(),
+                    "fonction" => $userEntity->getFonction()->getName(),
+                    "id_profil" => $userEntity->getProfil()->getId(),
+                    "profil" => $userEntity->getProfil()->getName(),
+                    "permissions" => $userEntity->getProfil()->getPermissions()
+                ];
+                // Notification
+                $this->alert(["Vous êtes connecté !"], "success");
+                return $this->redirect($response, "home");
+            } else {
+                $this->alert(["Le compte associé à cette adresse email est désactivé !"], "warning");
+                return $this->redirect($response, "login");
+            }
+        } else {
+            $this->alert(["Aucun compte associé à cette adresse email n'a été trouvé !"], "warning");
+            return $this->redirect($response, "login");
+        }
+    }
+
+    public function getOauth(RequestInterface $request, ResponseInterface $response)
+    {
+        try {
+            $provider = $this->google->getProvider("google");
+            header("Location: " . $provider->makeAuthUrl());
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+        exit();
     }
 }
