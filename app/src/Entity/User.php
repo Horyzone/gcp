@@ -23,14 +23,14 @@ class User
     /**
      * @var string $lastName
      *
-     * @ORM\Column(name="last_name", type="string", length=30)
+     * @ORM\Column(name="last_name", type="string", length=30, nullable=true)
      */
     private $lastName;
 
     /**
      * @var string $firstName
      *
-     * @ORM\Column(name="first_name", type="string", length=30)
+     * @ORM\Column(name="first_name", type="string", length=30, nullable=true)
      */
     private $firstName;
 
@@ -123,6 +123,8 @@ class User
      */
     public function __construct()
     {
+        $this->firstName = null;
+        $this->lastName = null;
         $this->dateCreate = new \DateTime();
         $this->password = null;
         $this->rememberToken = null;

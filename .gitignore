@@ -9,5 +9,6 @@ storage/logs/*
 !storage/logs/.gitkeep
 node_modules/*
 package-lock.json
+credentials.json
 docker/mysql
 docker/nginx/logs

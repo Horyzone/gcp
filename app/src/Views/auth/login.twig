@@ -17,7 +17,7 @@
   {{ csrf() }}
   <button class="btn btn-lg btn-primary btn-block" type="submit">Se connecter</button>
   <p class="margin-egal">ou</p>
-  <a href="#" class="btn btn-lg btn-secondary btn-block">
+  <a href="{{ url_for('google') }}" class="btn btn-lg btn-secondary btn-block">
     <span class="btn-icon fab fa-google"></span>
     Se connecter via Google
   </a>
