@@ -342,6 +342,29 @@ class User
     }
 
     /**
+    * Get fonction
+    *
+    * @return \Doctrine\Common\Collections\Collection
+    */
+    public function getFonction()
+    {
+        return $this->fonction;
+    }
+
+    /**
+     * Set fonction
+     *
+     * @param \App\Entity\Fonction $fonction
+     *
+     * @return User
+     */
+    public function setFonction(\App\Entity\Fonction $fonction = null)
+    {
+        $this->fonction = $fonction;
+        return $this;
+    }
+
+    /**
     * Get profil
     *
     * @return \Doctrine\Common\Collections\Collection

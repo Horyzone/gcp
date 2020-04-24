@@ -38,6 +38,12 @@ class Controller
         }
     }
 
+    public function generateToken($length = 250)
+    {
+        $alphabet = "0123456789azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN";
+        return substr(str_shuffle(str_repeat($alphabet, $length)), 0, $length);
+    }
+
     public function render(ResponseInterface $response, $file, $params = [])
     {
         return $this->container->get("view")->render($response, $file, $params);
