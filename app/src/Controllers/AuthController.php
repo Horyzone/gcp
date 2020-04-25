@@ -16,9 +16,9 @@ class AuthController extends Controller
         } else {
             $title = "Se connecter";
             if (file_exists(dirname(__DIR__, 3)."/credentials.json")) {
-               $google = true;
+                $google = true;
             } else {
-               $google = false;
+                $google = false;
             }
             $params = compact("title", "google");
             return $this->render($response, 'auth/login.twig', $params);
