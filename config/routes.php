@@ -24,7 +24,7 @@ $app->get('/logout', AuthController::class. ':getLogout')->setName('logout');
 // All pages get type
 $app->group('', function ($app) {
     // Home page
-    $app->get('/', HomeController::class. ':getHome')->setName('home');
+    $app->get('/[calendar/{date}]', HomeController::class. ':getHome')->setName('home');
 })
 ->add(new Middlewares\RememberMiddleware($container))
 ->add(new Middlewares\ConnectedMiddleware($container));

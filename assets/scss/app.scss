@@ -2,6 +2,7 @@ $black: #373a3c;
 $blue: #2780E3;
 $logo: url(./../img/logo.png);
 @import 'auth';
+@import 'calendar';
 
 .btn-icon {
   float: left !important;

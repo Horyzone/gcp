@@ -1,7 +1,73 @@
 {% extends "layout.twig" %}
 
 {% block content %}
+<div class="d-flex flex-row align-items-center justify-content-between">
+  <h2>{{ dateTitle }}</h2>
+  <div class="">
+    <a href="{{ url_for('home', {date: date|date_modify("-1 month")|date("Y-m")}) }}" class="btn btn-warning">
+      <i class="fas fa-chevron-left"></i>
+    </a>
+    <a href="{{ url_for('home', {date: date|date_modify("+1 month")|date("Y-m")}) }}" class="btn btn-warning">
+      <i class="fas fa-chevron-right"></i>
+    </a>
+  </div>
 
-Work in progress...
+</div>
+<table class="calendar-table calendar-table-{{weeks}}">
+  {% for i in 0..weeks-1 %}
+  <tr>
+    {% for k,d in days %}
+    {% set nb = k+i*7 %}
+      <td{% if (i == 0 and day|date_modify("+"~nb~" days")|date("d")|number_format > 6)
+          or (i == weeks-1 and day|date_modify("+"~nb~" days")|date("d")|number_format < 7) %} class="calendar-other-month"{% endif %}>
+        {% if i == 0 %}
+          <div class="calendar-week-day">
+            {{ d }}
+          </div>
+        {% endif %}
+        <div class="calendar-day">
+          {% if ((i == 0 and day|date_modify("+"~nb~" days")|date("d")|number_format < 6)
+              or (i == weeks-1 and day|date_modify("+"~nb~" days")|date("d")|number_format > 7)
+              or i != 0 and i != weeks-1)
+              and day|date_modify("+"~nb~" days")|date("d") == today|date("d") and today|date("Y-m") == date|date("Y-m") %}
+            <span class="badge badge-pill badge-warning">{{ day|date_modify("+"~nb~" days")|date("d") }}</span>
+          {% else %}
+            {{ day|date_modify("+"~nb~" days")|date("d") }}
+          {% endif %}
+          <br>
+          {% set datePeriodeFor = daysPeriodes[day|date_modify("+"~nb~" days")|date("d")|number_format] %}
+          {% if daysPeriodes[day|date_modify("+"~nb~" days")|date("d")|number_format]
+              and ((i == 0 and day|date_modify("+"~nb~" days")|date("d")|number_format < 6)
+              or (i == weeks-1 and day|date_modify("+"~nb~" days")|date("d")|number_format > 7)
+              or i != 0 and i != weeks-1) %}
+            {% if datePeriodeFor.text != "&nbsp;" %}
+              <a tabindex="0" class="btn btn-success" style="font-size: 75%;font-weight: 700;color: white;padding: 0.25em 0.4em;line-height: 1;width: 100%;border: 1px solid var(--success);"
+              role="button" data-toggle="popover" data-placement="top" data-trigger="focus"
+              data-title="{{ datePeriodeFor.title|raw }}" data-html="true"
+              data-content="{{ datePeriodeFor.text|raw }}<a href='{{ url_for('edit-periode', {id: datePeriodeFor.id}) }}' class='btn btn-warning'>Modifier</a> <a href='{{ url_for('remove-periode', {id: datePeriodeFor.id, token: token}) }}' class='btn btn-danger'>Supprimer</a>">
+                {{ datePeriodeFor.title|raw }}
+              </a>
+            {% else %}
+              <span class="badge badge-success" style="width: 100%;">
+                {{ datePeriodeFor.text|raw }}
+              </span>
+            {% endif %}
 
+          {% endif %}
+        </div>
+      </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+  <script>
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    })
+  </script>
 {% endblock %}
